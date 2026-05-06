@@ -2,13 +2,11 @@ import mongoose from "mongoose";
 
 const connectDB = async () => {
   try {
-    const conn = await mongoose.connect(process.env.MONGO_URI, {
-      family: 4, // 🔥 fixes ECONNREFUSED issue
-    });
+    const conn = await mongoose.connect(process.env.MONGO_URI);
 
     console.log(`MongoDB Connected: ${conn.connection.host}`);
   } catch (error) {
-    console.error("Database connection error:", error.message);
+    console.error(`Error: ${error.message}`);
     process.exit(1);
   }
 };

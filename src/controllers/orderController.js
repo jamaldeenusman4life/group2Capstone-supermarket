@@ -4,12 +4,9 @@ import { getAllOrdersService } from "../services/orderService.js";
 
 export const createOrderController = async (req, res) => {
   try {
-    // TEMP: since auth may not be ready yet
-    const userId = "temp-user-id";
+    const { customer, items } = req.body;
 
-    const { items } = req.body;
-
-    const order = await createOrder(userId, items);
+    const order = await createOrder(customer, items);
 
     res.status(201).json({
       success: true,
@@ -31,7 +28,7 @@ export const updateOrderStatusController = async (req, res) => {
 
     const order = await Order.findByIdAndUpdate(
       orderId,
-      { orderStatus: status },
+      { status: status },
       { new: true },
     );
 

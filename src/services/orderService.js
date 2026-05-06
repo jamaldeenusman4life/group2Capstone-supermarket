@@ -1,6 +1,6 @@
 import Order from "../models/orderModel.js";
 
-export const createOrder = async (userId, items) => {
+export const createOrder = async (customer, items) => {
   // calculate total amount
   const totalAmount = items.reduce((acc, item) => {
     return acc + item.price * item.quantity;
@@ -8,14 +8,10 @@ export const createOrder = async (userId, items) => {
 
   // create order in DB
   const order = await Order.create({
-    userId,
+    customer,
     items,
     totalAmount,
-    orderStatus: {
-      type: String,
-      enum: ["pending", "paid", "shipped", "delivered", "cancelled"],
-      default: "pending",
-    },
+    status: "pending",
   });
 
   return order;
