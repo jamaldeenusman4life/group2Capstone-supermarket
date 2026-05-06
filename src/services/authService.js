@@ -38,7 +38,7 @@ const login = async (email, password) => {
   return { user, token };
 };
 
-const getMe = async (userId) => {
+const getUser = async (userId) => {
   const user = await User.findById(userId).select("-password");
   if (!user) {
     throw new Error("User not found");
@@ -46,4 +46,4 @@ const getMe = async (userId) => {
   return user;
 };
 
-export { register, login, getMe };
+export { register, login, getUser };

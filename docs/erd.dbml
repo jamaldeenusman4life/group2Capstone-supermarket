@@ -1,0 +1,114 @@
+Table users {
+  id ObjectId [pk]
+  name string [not null]
+  email string [not null, unique]
+  password string [not null]
+  role string [not null, note: 'admin, cashier, customer, rider']
+  isActive boolean [default: true]
+  createdAt datetime
+  updatedAt datetime
+}
+
+Table categories {
+  id ObjectId [pk]
+  name string [not null, unique]
+  description string
+  createdAt datetime
+  updatedAt datetime
+}
+
+Table products {
+  id ObjectId [pk]
+  name string [not null]
+  description string
+  price number [not null]
+  category_id ObjectId [ref: > categories.id]
+  supplier_id ObjectId [ref: > suppliers.id]
+  quantity number [not null]
+  lowStockThreshold number [default: 10]
+  expiryDate datetime
+  images array
+  isAvailable boolean [default: true]
+  createdAt datetime
+  updatedAt datetime
+}
+
+Table suppliers {
+  id ObjectId [pk]
+  name string [not null]
+  email string [not null]
+  phone string [not null]
+  address string
+  createdAt datetime
+  updatedAt datetime
+}
+
+Table orders {
+  id ObjectId [pk]
+  customer_id ObjectId [ref: > users.id]
+  items array [note: 'array of product_id and quantity']
+  totalAmount number [not null]
+  status string [note: 'pending, confirmed, dispatched, delivered, cancelled']
+  promotion_id ObjectId [ref: > promotions.id]
+  discountAmount number [default: 0]
+  createdAt datetime
+  updatedAt datetime
+}
+
+Table payments {
+  id ObjectId [pk]
+  order_id ObjectId [ref: > orders.id]
+  customer_id ObjectId [ref: > users.id]
+  amount number [not null]
+  status string [note: 'pending, success, failed']
+  method string [note: 'card, transfer, cash']
+  transactionId string
+  createdAt datetime
+  updatedAt datetime
+}
+
+Table deliveries {
+  id ObjectId [pk]
+  order_id ObjectId [ref: > orders.id]
+  rider_id ObjectId [ref: > users.id]
+  status string [note: 'assigned, pickedup, ontheway, delivered']
+  deliveryAddress string [not null]
+  estimatedTime datetime
+  deliveredAt datetime
+  createdAt datetime
+  updatedAt datetime
+}
+
+Table promotions {
+  id ObjectId [pk]
+  code string [not null, unique]
+  discountType string [note: 'percentage, fixed']
+  discountValue number [not null]
+  minOrderAmount number [default: 0]
+  expiryDate datetime
+  isActive boolean [default: true]
+  usageLimit number
+  usageCount number [default: 0]
+  createdAt datetime
+  updatedAt datetime
+}
+
+Table notifications {
+  id ObjectId [pk]
+  user_id ObjectId [ref: > users.id]
+  title string [not null]
+  message string [not null]
+  type string [note: 'order, delivery, restock, promotion']
+  isRead boolean [default: false]
+  createdAt datetime
+}
+
+Table purchaseOrders {
+  id ObjectId [pk]
+  supplier_id ObjectId [ref: > suppliers.id]
+  products array [note: 'array of product_id and quantity']
+  totalAmount number
+  status string [note: 'pending, received, cancelled']
+  createdAt datetime
+  updatedAt datetime
+}

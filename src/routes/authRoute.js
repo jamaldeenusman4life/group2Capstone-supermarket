@@ -2,7 +2,7 @@ import express from "express";
 import {
   registerUser,
   loginUser,
-  getMe,
+  getUser,
 } from "../controllers/authController.js";
 import { protect } from "../middlewares/authMiddleware.js";
 
@@ -13,6 +13,6 @@ router.post("/register", registerUser);
 router.post("/login", loginUser);
 
 // Protected routes - token required
-router.get("/me", protect, getMe);
+router.get("/getUser", protect, getUser);
 
 export default router;

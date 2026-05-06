@@ -1,10 +1,8 @@
 import jwt from "jsonwebtoken";
 import User from "../models/userModel.js";
 
-// Protect routes - check if user is logged in
 const protect = async (req, res, next) => {
   try {
-    // Check if token exists
     let token;
     if (
       req.headers.authorization &&
@@ -20,10 +18,8 @@ const protect = async (req, res, next) => {
       });
     }
 
-    // Verify token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    // Check if user still exists
     const user = await User.findById(decoded.id).select("-password");
     if (!user) {
       return res.status(401).json({
@@ -32,7 +28,6 @@ const protect = async (req, res, next) => {
       });
     }
 
-    // Check if user is active
     if (!user.isActive) {
       return res.status(401).json({
         status: "error",
@@ -40,7 +35,6 @@ const protect = async (req, res, next) => {
       });
     }
 
-    // Attach user to request
     req.user = user;
     next();
   } catch (error) {
@@ -51,7 +45,6 @@ const protect = async (req, res, next) => {
   }
 };
 
-// Restrict to certain roles
 const restrictTo = (...roles) => {
   return (req, res, next) => {
     if (!roles.includes(req.user.role)) {
