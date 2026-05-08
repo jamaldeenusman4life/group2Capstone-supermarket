@@ -13,10 +13,11 @@ const deliverySchema = new mongoose.Schema(
       ref: 'User',
     },
 
-    status: {
+
+    deliveryStatus: {
       type: String,
-      enum: ['assigned', 'pickedup', 'ontheway', 'delivered'],
-      default: 'assigned',
+      enum: ['pending', 'in_transit', 'delivered', 'failed'],
+      default: 'pending',
     },
 
     deliveryAddress: {

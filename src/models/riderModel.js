@@ -1,14 +1,17 @@
 import mongoose from 'mongoose';
 
-const supplierSchema = new mongoose.Schema(
+const riderSchema = new mongoose.Schema(
   {
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: [true, 'Supplier ID is required'],
+      required: [true, 'Rider ID is required'],
     },
 
-   
+   riderID: {
+      type: String,
+      trim: true,
+    },
 
     address: {
       type: String,
@@ -20,6 +23,6 @@ const supplierSchema = new mongoose.Schema(
   }
 );
 
-const Supplier = mongoose.model('Supplier', supplierSchema);
+const Rider = mongoose.model('Rider', riderSchema);
 
-export default Supplier;
+export default Rider;
