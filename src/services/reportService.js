@@ -60,7 +60,7 @@ class ReportService {
   async getSavedReportById(reportId) {
     const report = await Report.findById(reportId).populate(
       "generatedBy",
-      "name email"
+      "name email",
     );
 
     if (!report) {
@@ -79,7 +79,7 @@ class ReportService {
     const report = await Report.findByIdAndUpdate(
       reportId,
       { isArchived: true },
-      { new: true }
+      { new: true },
     );
 
     if (!report) {
@@ -132,7 +132,12 @@ class ReportService {
    * @param {String} userId - Optional user ID to save the report
    * @returns {Object} Sales report data
    */
-  async generateSalesReport(startDate, endDate, categoryId = null, userId = null) {
+  async generateSalesReport(
+    startDate,
+    endDate,
+    categoryId = null,
+    userId = null,
+  ) {
     const start = new Date(startDate);
     const end = new Date(endDate);
 
@@ -186,7 +191,9 @@ class ReportService {
         $group: {
           _id: "$items.product",
           totalQuantity: { $sum: "$items.quantity" },
-          totalRevenue: { $sum: { $multiply: ["$items.quantity", "$items.price"] } },
+          totalRevenue: {
+            $sum: { $multiply: ["$items.quantity", "$items.price"] },
+          },
         },
       },
       { $sort: { totalRevenue: -1 } },
@@ -215,12 +222,11 @@ class ReportService {
 
     // Save report if userId is provided
     if (userId) {
-      await this.saveReport(
-        "sales",
-        userId,
-        reportData,
-        { startDate, endDate, categoryId }
-      );
+      await this.saveReport("sales", userId, reportData, {
+        startDate,
+        endDate,
+        categoryId,
+      });
     }
 
     return reportData;
@@ -242,7 +248,9 @@ class ReportService {
           $group: {
             _id: "$items.product",
             totalQuantity: { $sum: "$items.quantity" },
-            totalRevenue: { $sum: { $multiply: ["$items.quantity", "$items.price"] } },
+            totalRevenue: {
+              $sum: { $multiply: ["$items.quantity", "$items.price"] },
+            },
             orderCount: { $sum: 1 },
           },
         },
@@ -292,7 +300,9 @@ class ReportService {
                 $group: {
                   _id: null,
                   totalQuantity: { $sum: "$items.quantity" },
-                  totalRevenue: { $sum: { $multiply: ["$items.quantity", "$items.price"] } },
+                  totalRevenue: {
+                    $sum: { $multiply: ["$items.quantity", "$items.price"] },
+                  },
                 },
               },
             ],
@@ -356,12 +366,12 @@ class ReportService {
             averageDiscount: 0,
           },
         };
-      })
+      }),
     );
 
     const totalDiscountGiven = promotionStats.reduce(
       (sum, promo) => sum + (promo.stats.totalDiscountGiven || 0),
-      0
+      0,
     );
 
     const reportData = {
@@ -512,12 +522,10 @@ class ReportService {
     };
 
     if (userId) {
-      await this.saveReport(
-        "payments",
-        userId,
-        reportData,
-        { startDate, endDate }
-      );
+      await this.saveReport("payments", userId, reportData, {
+        startDate,
+        endDate,
+      });
     }
 
     return reportData;

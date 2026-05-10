@@ -31,7 +31,7 @@ const notificationSchema = new mongoose.Schema(
       default: null,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 // Index for efficient querying

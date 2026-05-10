@@ -25,7 +25,7 @@ const reportSchema = new mongoose.Schema(
       default: false,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 // Index for efficient querying

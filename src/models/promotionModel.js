@@ -43,7 +43,7 @@ const promotionSchema = new mongoose.Schema(
       min: [0, "Usage count cannot be negative"],
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 // Index for efficient querying
