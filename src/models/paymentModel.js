@@ -2,12 +2,12 @@ import mongoose from "mongoose";
 
 const paymentSchema = new mongoose.Schema(
   {
-    order_id: {
+    order: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Order",
       required: true,
     },
-    customer_id: {
+    customer: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
@@ -32,4 +32,6 @@ const paymentSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-export default mongoose.model("Payment", paymentSchema);
+const Payment = mongoose.model("Payment", paymentSchema);
+
+export default Payment;

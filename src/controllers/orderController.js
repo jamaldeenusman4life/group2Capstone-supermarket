@@ -1,61 +1,107 @@
-import { createOrder } from "../services/orderService.js";
-import Order from "../models/orderModel.js";
-import { getAllOrdersService } from "../services/orderService.js";
+import * as orderService from "../services/orderService.js";
 
-export const createOrderController = async (req, res) => {
+const createOrder = async (req, res) => {
   try {
-    const { customer, items } = req.body;
-
-    const order = await createOrder(customer, items);
-
+    const order = await orderService.createOrder(req.user.id, req.body);
     res.status(201).json({
-      success: true,
+      status: "success",
       message: "Order created successfully",
-      data: order,
+      data: { order },
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
+    res.status(400).json({
+      status: "error",
       message: error.message,
     });
   }
 };
 
-export const updateOrderStatusController = async (req, res) => {
+const getAllOrders = async (req, res) => {
   try {
-    const { orderId } = req.params;
-    const { status } = req.body;
+    const orders = await orderService.getAllOrders();
+    res.status(200).json({
+      status: "success",
+      results: orders.length,
+      data: { orders },
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: "error",
+      message: error.message,
+    });
+  }
+};
 
-    const order = await Order.findByIdAndUpdate(
-      orderId,
-      { status: status },
-      { new: true },
+const getOrder = async (req, res) => {
+  try {
+    const order = await orderService.getOrder(req.params.id);
+    res.status(200).json({
+      status: "success",
+      data: { order },
+    });
+  } catch (error) {
+    res.status(404).json({
+      status: "error",
+      message: error.message,
+    });
+  }
+};
+
+const getUserOrders = async (req, res) => {
+  try {
+    const orders = await orderService.getUserOrders(req.user.id);
+    res.status(200).json({
+      status: "success",
+      results: orders.length,
+      data: { orders },
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: "error",
+      error: error.message,
+    });
+  }
+};
+
+const updateOrderStatus = async (req, res) => {
+  try {
+    const order = await orderService.updateOrderStatus(
+      req.params.id,
+      req.body.status,
     );
-
-    res.json({
-      success: true,
-      data: order,
+    res.status(200).json({
+      status: "success",
+      data: { order },
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
+    res.status(400).json({
+      status: "error",
       message: error.message,
     });
   }
 };
 
-export const getAllOrders = async (req, res) => {
+const cancelOrder = async (req, res) => {
   try {
-    const orders = await getAllOrdersService();
-
-    res.json({
-      success: true,
-      data: orders,
+    const order = await orderService.cancelOrder(req.params.id, req.user.id);
+    res.status(200).json({
+      status: "success",
+      message: "Order cancelled successfully",
+      data: { order },
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
+    res.status(400).json({
+      status: "error",
       message: error.message,
     });
   }
+};
+
+export {
+  createOrder,
+  getAllOrders,
+  getOrder,
+  getUserOrders,
+  updateOrderStatus,
+  cancelOrder,
 };

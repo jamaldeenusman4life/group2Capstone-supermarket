@@ -1,22 +1,71 @@
 import Order from "../models/orderModel.js";
 
-export const createOrder = async (customer, items) => {
-  // calculate total amount
-  const totalAmount = items.reduce((acc, item) => {
-    return acc + item.price * item.quantity;
-  }, 0);
-
-  // create order in DB
+const createOrder = async (customerId, orderData) => {
   const order = await Order.create({
-    customer,
-    items,
-    totalAmount,
-    status: "pending",
+    customer: customerId,
+    ...orderData,
   });
-
   return order;
 };
 
-export const getAllOrdersService = async () => {
-  return await Order.find();
+const getAllOrders = async () => {
+  const orders = await Order.find()
+    .populate("customer", "name email")
+    .populate("items.product", "name price");
+  return orders;
+};
+
+const getOrder = async (orderId) => {
+  const order = await Order.findById(orderId)
+    .populate("customer", "name email")
+    .populate("items.product", "name price");
+  if (!order) {
+    throw new Error("Order not found");
+  }
+  return order;
+};
+
+const getUserOrders = async (customerId) => {
+  const orders = await Order.find({ customer: customerId }).populate(
+    "items.product",
+    "name price",
+  );
+  return orders;
+};
+
+const updateOrderStatus = async (orderId, status) => {
+  const order = await Order.findByIdAndUpdate(
+    orderId,
+    { status },
+    { new: true },
+  );
+  if (!order) {
+    throw new Error("Order not found");
+  }
+  return order;
+};
+
+const cancelOrder = async (orderId, customerId) => {
+  const order = await Order.findOne({
+    _id: orderId,
+    customer: customerId,
+  });
+  if (!order) {
+    throw new Error("Order not found");
+  }
+  if (order.status !== "pending") {
+    throw new Error("Only pending orders can be cancelled");
+  }
+  order.status = "cancelled";
+  await order.save();
+  return order;
+};
+
+export {
+  createOrder,
+  getAllOrders,
+  getOrder,
+  getUserOrders,
+  updateOrderStatus,
+  cancelOrder,
 };

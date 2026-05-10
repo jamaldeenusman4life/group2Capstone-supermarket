@@ -1,72 +1,69 @@
-import { initializePayment } from "../services/paymentService.js";
-import { verifyPayment } from "../services/paymentService.js";
-import Order from "../models/orderModel.js";
-import Payment from "../models/paymentModel.js";
+import * as paymentService from "../services/paymentService.js";
 
-export const initializePaymentController = async (req, res) => {
+const initiatePayment = async (req, res) => {
   try {
-    const { email, amount } = req.body;
-
-    const payment = await initializePayment(email, amount);
-
-    res.json({
-      success: true,
-      paymentLink: payment.authorization_url,
+    const { orderId, method } = req.body;
+    const result = await paymentService.initiatePayment(
+      orderId,
+      req.user.id,
+      method,
+    );
+    res.status(200).json({
+      status: "success",
+      data: result,
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
+    res.status(400).json({
+      status: "error",
       message: error.message,
     });
   }
 };
 
-export const verifyPaymentController = async (req, res) => {
+const verifyPayment = async (req, res) => {
   try {
-    const { reference, orderId } = req.body;
-
-    const paymentData = await verifyPayment(reference);
-
-    if (paymentData.status === "success") {
-      // get order first (to get customer_id)
-      const order = await Order.findById(orderId);
-
-      if (!order) {
-        return res.status(404).json({
-          success: false,
-          message: "Order not found",
-        });
-      }
-
-      // update order status
-      order.status = "confirmed";
-      await order.save();
-
-      // create payment record
-      await Payment.create({
-        order_id: orderId,
-        customer_id: order.customer,
-        amount: paymentData.amount / 100,
-        status: "success",
-        method: "paystack",
-        transactionId: paymentData.reference,
-      });
-
-      return res.json({
-        success: true,
-        message: "Payment verified, order updated",
-        data: order,
-      });
-    }
-
-    return res.status(400).json({
-      success: false,
-      message: "Payment not successful",
+    const payment = await paymentService.verifyPayment(req.params.reference);
+    res.status(200).json({
+      status: "success",
+      data: { payment },
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
+    res.status(400).json({
+      status: "error",
       message: error.message,
     });
   }
 };
+
+const getPaymentByOrder = async (req, res) => {
+  try {
+    const payment = await paymentService.getPaymentByOrder(req.params.orderId);
+    res.status(200).json({
+      status: "success",
+      data: { payment },
+    });
+  } catch (error) {
+    res.status(404).json({
+      status: "error",
+      message: error.message,
+    });
+  }
+};
+
+const getAllPayments = async (req, res) => {
+  try {
+    const payments = await paymentService.getAllPayments();
+    res.status(200).json({
+      status: "success",
+      results: payments.length,
+      data: { payments },
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: "error",
+      message: error.message,
+    });
+  }
+};
+
+export { initiatePayment, verifyPayment, getPaymentByOrder, getAllPayments };
