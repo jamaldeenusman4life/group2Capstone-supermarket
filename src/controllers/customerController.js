@@ -1,20 +1,52 @@
-import { createCustomerService } from "../services/custmService.js";
+import * as customerService from "../services/customerService.js";
 
-const createCustomer = async (req, res) => {
+const getAllCustomers = async (req, res) => {
   try {
-    const{ name, email, phone, password, address } = req.body;
-    const createdACustomer = await createCustomerService(req.body);
-
-    return res.status(201).json({
-      message: "Customer created successfully",
-      createdACustomer,
+    const customers = await customerService.getAllCustomers();
+    res.status(200).json({
+      status: "success",
+      results: customers.length,
+      data: { customers },
     });
   } catch (error) {
-    return res.status(400).json({
+    res.status(500).json({
+      status: "error",
       message: error.message,
     });
   }
 };
 
+const getCustomer = async (req, res) => {
+  try {
+    const customer = await customerService.getCustomer(req.params.id);
+    res.status(200).json({
+      status: "success",
+      data: { customer },
+    });
+  } catch (error) {
+    res.status(404).json({
+      status: "error",
+      message: error.message,
+    });
+  }
+};
 
-export { createCustomer };
+const updateCustomer = async (req, res) => {
+  try {
+    const customer = await customerService.updateCustomer(
+      req.params.id,
+      req.body,
+    );
+    res.status(200).json({
+      status: "success",
+      data: { customer },
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: "error",
+      message: error.message,
+    });
+  }
+};
+
+export { getAllCustomers, getCustomer, updateCustomer };

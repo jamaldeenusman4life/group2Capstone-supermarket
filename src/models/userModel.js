@@ -16,15 +16,15 @@ const userSchema = new mongoose.Schema(
       trim: true,
     },
 
-     email: {
+    email: {
       type: String,
-      required: [true, 'Email is required'],
+      required: [true, "Email is required"],
       unique: true,
       lowercase: true,
       trim: true,
       match: [
         /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-        'Please provide a valid email address',
+        "Please provide a valid email address",
       ],
     },
 
@@ -35,7 +35,7 @@ const userSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ["admin", "cashier", "customer", "rider", "supplier"],
+      enum: ["admin", "cashier", "customer", "rider"],
       default: "customer",
     },
     isActive: {
