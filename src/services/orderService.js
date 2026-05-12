@@ -1,6 +1,11 @@
 import Order from "../models/orderModel.js";
+import {
+  calculateOrderTotal,
+  calculateDiscountedTotal,
+} from "../utils/calculateTotal.js";
 
 const createOrder = async (customerId, orderData) => {
+  const calculatedTotal = calculateOrderTotal(orderData.items);
   const order = await Order.create({
     customer: customerId,
     ...orderData,
