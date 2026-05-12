@@ -1,11 +1,5 @@
-import jwt from "jsonwebtoken";
+import generateToken from "../utils/genarateToken.js";
 import User from "../models/userModel.js";
-
-const generateToken = (userId) => {
-  return jwt.sign({ id: userId }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRES_IN,
-  });
-};
 
 const register = async (userData) => {
   const existingUser = await User.findOne({ email: userData.email });
