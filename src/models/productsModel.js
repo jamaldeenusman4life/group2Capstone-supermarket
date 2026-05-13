@@ -1,3 +1,4 @@
+import { boolean } from "joi";
 import mongoose from "mongoose";
 export const productSchema = new mongoose.Schema(
   {
@@ -16,14 +17,14 @@ export const productSchema = new mongoose.Schema(
       required: [true, "Product price is required.(NN)"],
       min: [0.01, "Price must be greater than zero"],
     },
-    category_id: {
+    category: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "category.id",
+      ref: "Category",
       required: [true, "A product must be assigned to a category"],
     },
-    supplier_id: {
+    supplier: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "supplier.id",
+      ref: "Supplier",
       required: [true, " A product must be assigned to supplier"],
     },
     quantity: {
@@ -61,6 +62,14 @@ export const productSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
+    deletedAt: {
+      type: Date,
+      default: null,
+    },
   },
   { timestamps: true },
 );
@@ -75,5 +84,5 @@ productSchema.pre("save", function (next) {
   }
   next();
 });
-const product = mongoose.model("Product", productSchema);
-export default product;
+const Product = mongoose.model("Product", productSchema);
+export default Product;
