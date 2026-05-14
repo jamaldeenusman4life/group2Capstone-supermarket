@@ -96,3 +96,52 @@ export const deleteProduct = async (req, res) => {
     console.log("error deleting product", error.message);
   }
 };
+export const getLowStockProducts = async (req, res) => {
+  try {
+    const products = await productService.getLowStockProducts();
+    res.status(200).json({
+      status: "success",
+      results: products.length,
+      data: { products },
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: "error",
+      message: error.message,
+    });
+  }
+};
+
+export const updateStock = async (req, res) => {
+  try {
+    const product = await productService.updateStock(
+      req.params.id,
+      req.body.quantity,
+    );
+    res.status(200).json({
+      status: "success",
+      data: { product },
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: "error",
+      message: error.message,
+    });
+  }
+};
+
+export const getExpiringProducts = async (req, res) => {
+  try {
+    const products = await productService.getExpiringProducts();
+    res.status(200).json({
+      status: "success",
+      results: products.length,
+      data: { products },
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: "error",
+      message: error.message,
+    });
+  }
+};

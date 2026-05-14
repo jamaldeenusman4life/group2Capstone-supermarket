@@ -47,3 +47,34 @@ export const deleteProduct = async (id) => {
   );
   return product;
 };
+
+// Get low stock products
+export const getLowStockProducts = async () => {
+  const products = await Product.find({
+    $expr: { $lte: ["$quantity", "$lowStockThreshold"] },
+  });
+  return products;
+};
+
+// Update stock
+export const updateStock = async (productId, quantity) => {
+  const product = await Product.findByIdAndUpdate(
+    productId,
+    { quantity },
+    { new: true },
+  );
+  if (!product) {
+    throw new Error("Product not found");
+  }
+  return product;
+};
+
+// Get expiring products
+export const getExpiringProducts = async () => {
+  const sevenDaysFromNow = new Date();
+  sevenDaysFromNow.setDate(sevenDaysFromNow.getDate() + 7);
+  const products = await Product.find({
+    expiryDate: { $lte: sevenDaysFromNow },
+  });
+  return products;
+};
