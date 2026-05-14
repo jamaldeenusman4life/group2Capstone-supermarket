@@ -14,6 +14,7 @@ import { validate } from "../middlewares/validate.js";
 import { verifyEntityExists } from "../middlewares/verifyEnitity.js";
 import { validateObjectId } from "../middlewares/validateId.js";
 import Category from "../models/categoryModels.js";
+import Supplier from "../models/supplierModel.js";
 import { restrictTo } from "../middlewares/authMiddleware.js";
 const router = express.Router();
 router.post(
@@ -21,6 +22,7 @@ router.post(
   restrictTo("admin"),
   validate(validateProduct),
   verifyEntityExists(Category, category),
+  verifyEntityExists(Supplier, supplier),
   createProduct,
 );
 router.get("/product/:id", validateObjectId, getProduct);
@@ -31,6 +33,7 @@ router.update(
   validateObjectId,
   validate(updateProductValidation),
   verifyEntityExists(Category, category),
+  verifyEntityExists(Supplier, supplier),
   updateProduct,
 );
 router.delete(

@@ -14,7 +14,7 @@ export const verifyEntityExists = (model, fieldName) => {
       next();
     } catch (error) {
       console.log(error.message);
-      return res.status(500).json({
+      res.status(500).json({
         success: false,
         message: "database id verification failed",
       });
