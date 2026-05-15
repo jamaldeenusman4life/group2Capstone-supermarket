@@ -33,6 +33,7 @@ router.get("/product/:id", validateObjectId, getProduct);
 router.get("/product", getAllProduct);
 router.update(
   "/product/:id",
+  protect,
   restrictTo("admin"),
   validateObjectId,
   validate(updateProductValidation),
@@ -42,6 +43,7 @@ router.update(
 );
 router.delete(
   "/product/:id",
+  protect,
   restrictTo("admin"),
   validateObjectId,
   deleteProduct,
@@ -59,3 +61,4 @@ router.get(
   getExpiringProducts,
 );
 router.put("/inventory/:id/stock", protect, restrictTo("admin"), updateStock);
+export default router;
