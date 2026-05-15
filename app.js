@@ -10,6 +10,8 @@ import paymentRoute from "./src/routes/paymentRoute.js";
 import customerRoute from "./src/routes/customerRoute.js";
 import deliveryRoute from "./src/routes/deliveryRoute.js";
 import supplierRoute from "./src/routes/supplierRoute.js";
+import productRoutes from "./src/routes/productRoute.js";
+import categoryRoutes from "./src/routes/categoryRoute.js";
 
 const app = express();
 
@@ -26,14 +28,11 @@ app.use("/api/payments", paymentRoute);
 app.use("/api/deliveries", deliveryRoute);
 app.use("/api/suppliers", supplierRoute);
 app.use("/api/customers", customerRoute);
+app.use("/api/products", productRoutes);
+app.use("/api/categories", categoryRoutes);
 
 app.get("/", (req, res) => {
   res.json({ message: "Supermarket API is running" });
-});
-
-app.post("/", (req, res) => {
-  res.json({ message: "Customer API is running" });
-  console.log("Customer API is running:", req.body);
 });
 
 export default app;
