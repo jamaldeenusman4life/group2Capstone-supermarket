@@ -47,9 +47,9 @@ const getOrder = async (req, res) => {
   }
 };
 
-const getUserOrders = async (req, res) => {
+const getMyOrders = async (req, res) => {
   try {
-    const orders = await orderService.getUserOrders(req.user.id);
+    const orders = await orderService.getMyOrders(req.user.id);
     res.status(200).json({
       status: "success",
       results: orders.length,
@@ -101,7 +101,7 @@ export {
   createOrder,
   getAllOrders,
   getOrder,
-  getUserOrders,
+  getMyOrders,
   updateOrderStatus,
   cancelOrder,
 };

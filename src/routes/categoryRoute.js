@@ -6,25 +6,41 @@ import {
   updateCategory,
   deleteCategory,
 } from "../controllers/categoryController.js";
-import { validate } from "../middlewares/validate.js";
-import { validateCategory } from "../validations/categoryValidation.js";
+import { validateBody, validateObjectId } from "../middlewares/validator.js";
+import {
+  validateCategory,
+  validateCategoryUpdate,
+} from "../validations/categoryValidation.js";
 import { protect, restrictTo } from "../middlewares/authMiddleware.js";
 
 const router = express.Router();
 
 // Public routes
 router.get("/", getAllCategories);
-router.get("/:id", getCategory);
+router.get("/:id", validateObjectId(), getCategory);
 
 // Admin only routes
 router.post(
   "/",
   protect,
-  validate(validateCategory),
   restrictTo("admin"),
+  validateBody(validateCategory),
   createCategory,
 );
-router.put("/:id", protect, restrictTo("admin"), updateCategory);
-router.delete("/:id", protect, restrictTo("admin"), deleteCategory);
+router.put(
+  "/:id",
+  protect,
+  restrictTo("admin"),
+  validateObjectId(),
+  validateBody(validateCategoryUpdate),
+  updateCategory,
+);
+router.delete(
+  "/:id",
+  protect,
+  restrictTo("admin"),
+  validateObjectId(),
+  deleteCategory,
+);
 
 export default router;

@@ -13,9 +13,11 @@ import {
   validateProduct,
   updateProductValidation,
 } from "../validations/productValidation.js";
-import { validate } from "../middlewares/validate.js";
-import { verifyEntityExists } from "../middlewares/verifyEntity.js";
-import { validateObjectId } from "../middlewares/validateId.js";
+import {
+  validateBody,
+  validateObjectId,
+  verifyEntityExists,
+} from "../middlewares/validator.js";
 import Category from "../models/categoryModel.js";
 import Supplier from "../models/supplierModel.js";
 import { restrictTo, protect } from "../middlewares/authMiddleware.js";
@@ -24,19 +26,19 @@ router.post(
   "/",
   protect,
   restrictTo("admin"),
-  validate(validateProduct),
+  validateBody(validateProduct),
   verifyEntityExists(Category, "category"),
   verifyEntityExists(Supplier, "supplier"),
   createProduct,
 );
-router.get("/:id", validateObjectId, getProduct);
+router.get("/:id", validateObjectId(), getProduct);
 router.get("/", getAllProduct);
 router.put(
   "/:id",
   protect,
   restrictTo("admin"),
-  validateObjectId,
-  validate(updateProductValidation),
+  validateObjectId(),
+  validateBody(updateProductValidation),
   verifyEntityExists(Category, "category"),
   verifyEntityExists(Supplier, "supplier"),
   updateProduct,
@@ -45,7 +47,7 @@ router.delete(
   "/:id",
   protect,
   restrictTo("admin"),
-  validateObjectId,
+  validateObjectId(),
   deleteProduct,
 );
 router.get(

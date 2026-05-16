@@ -5,12 +5,12 @@ export const validateUser = joi
       "string.empty": "Name is required",
       "string.min": "Name must be atleast 2 characters long",
     }),
-    email: joi.string().email().lowercase().required().message({
-      "string.email ": "Please provide a valid Email",
+    email: joi.string().email().lowercase().required().messages({
+      "string.email": "Please provide a valid Email",
       "string.empty": "Email is required",
     }),
-    password: joi.string().min(8).required().message({
-      "string.min": "Password must be atleast 8 characters long",
+    password: joi.string().min(6).required().messages({
+      "string.min": "Password must be atleast 6 characters long",
       "string.empty": "Password is required",
     }),
     role: joi
@@ -18,8 +18,21 @@ export const validateUser = joi
       .valid("admin", "cashier", "customer", "rider")
       .required()
       .messages({
-        " any.role": "Role must either be admin, cashier, customer, or rider",
+        "any.only": "Role must either be admin, cashier, customer, or rider",
       }),
-    isActive: joi.string().boolean().default(true),
+    isActive: joi.boolean().default(true),
+  })
+  .unknown(false);
+
+export const validateLogin = joi
+  .object({
+    email: joi.string().email().lowercase().required().messages({
+      "string.email": "Please provide a valid Email",
+      "string.empty": "Email is required",
+    }),
+    password: joi.string().min(6).required().messages({
+      "string.min": "Password must be atleast 6 characters long",
+      "string.empty": "Password is required",
+    }),
   })
   .unknown(false);

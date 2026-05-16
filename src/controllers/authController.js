@@ -33,9 +33,9 @@ const loginUser = async (req, res) => {
   }
 };
 
-const getUser = async (req, res) => {
+const getMe = async (req, res) => {
   try {
-    const user = await authService.getUser(req.user.id);
+    const user = await authService.getMe(req.user.id);
     res.status(200).json({
       status: "success",
       data: { user },
@@ -48,4 +48,4 @@ const getUser = async (req, res) => {
   }
 };
 
-export { registerUser, loginUser, getUser };
+export { registerUser, loginUser, getMe };

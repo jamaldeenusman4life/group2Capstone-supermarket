@@ -32,7 +32,7 @@ const login = async (email, password) => {
   return { user, token };
 };
 
-const getUser = async (userId) => {
+const getMe = async (userId) => {
   const user = await User.findById(userId).select("-password");
   if (!user) {
     throw new Error("User not found");
@@ -40,4 +40,4 @@ const getUser = async (userId) => {
   return user;
 };
 
-export { register, login, getUser };
+export { register, login, getMe };

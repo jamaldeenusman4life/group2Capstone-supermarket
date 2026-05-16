@@ -12,24 +12,55 @@ import {
   getReportStatistics,
 } from "../controllers/reportController.js";
 import { protect, restrictTo } from "../middlewares/authMiddleware.js";
+import { validateObjectId } from "../middlewares/validator.js";
 
 const router = express.Router();
 
-// All routes require admin authentication
-router.use(protect, restrictTo("admin"));
+// All report routes are admin only
 
-// Report generation endpoints
-router.get("/sales", generateSalesReport);
-router.get("/products", generateProductReport);
-router.get("/promotions", generatePromotionReport);
-router.get("/customers", generateCustomerReport);
-router.get("/payments", generatePaymentReport);
+// Generate reports
+router.get("/sales", protect, restrictTo("admin"), generateSalesReport);
 
-// Saved reports management endpoints
-router.get("/saved/statistics", getReportStatistics);
-router.get("/saved", getSavedReports);
-router.get("/saved/:id", getSavedReportById);
-router.put("/saved/:id/archive", archiveReport);
-router.delete("/saved/:id", deleteReport);
+router.get("/products", protect, restrictTo("admin"), generateProductReport);
+
+router.get("/revenue", protect, restrictTo("admin"), generatePaymentReport);
+
+router.get("/customers", protect, restrictTo("admin"), generateCustomerReport);
+
+router.get(
+  "/promotions",
+  protect,
+  restrictTo("admin"),
+  generatePromotionReport,
+);
+
+// Saved reports
+router.get("/saved", protect, restrictTo("admin"), getSavedReports);
+
+router.get("/statistics", protect, restrictTo("admin"), getReportStatistics);
+
+router.get(
+  "/saved/:id",
+  protect,
+  restrictTo("admin"),
+  validateObjectId(),
+  getSavedReportById,
+);
+
+router.put(
+  "/saved/:id/archive",
+  protect,
+  restrictTo("admin"),
+  validateObjectId(),
+  archiveReport,
+);
+
+router.delete(
+  "/saved/:id",
+  protect,
+  restrictTo("admin"),
+  validateObjectId(),
+  deleteReport,
+);
 
 export default router;

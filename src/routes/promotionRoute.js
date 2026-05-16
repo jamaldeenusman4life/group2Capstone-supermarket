@@ -9,18 +9,59 @@ import {
   getActivePromotions,
 } from "../controllers/promotionController.js";
 import { protect, restrictTo } from "../middlewares/authMiddleware.js";
+import { validateBody, validateObjectId } from "../middlewares/validator.js";
+import {
+  validateCreatePromotion,
+  validateUpdatePromotion,
+  validateApplyPromotion,
+} from "../validations/promotionValidation.js";
 
 const router = express.Router();
 
-// Admin-only routes
-router.post("/", protect, restrictTo("admin"), createPromotion);
-router.get("/", protect, restrictTo("admin"), getAllPromotions);
-router.get("/active", getActivePromotions);
-router.get("/:id", protect, restrictTo("admin"), getPromotionById);
-router.put("/:id", protect, restrictTo("admin"), updatePromotion);
-router.delete("/:id", protect, restrictTo("admin"), deletePromotion);
+// Create promotion
+router.post(
+  "/",
+  protect,
+  restrictTo("admin"),
+  validateBody(validateCreatePromotion),
+  createPromotion,
+);
 
-// Customer route to apply promotion
-router.post("/apply", protect, applyPromotion);
+// Get all promotions
+router.get("/", getAllPromotions);
+
+// Get active promotions
+router.get("/active", getActivePromotions);
+
+// Apply promotion
+router.post(
+  "/apply",
+  protect,
+  restrictTo("customer"),
+  validateBody(validateApplyPromotion),
+  applyPromotion,
+);
+
+// Get single promotion
+router.get("/:id", protect, validateObjectId(), getPromotionById);
+
+// Update promotion
+router.put(
+  "/:id",
+  protect,
+  restrictTo("admin"),
+  validateObjectId(),
+  validateBody(validateUpdatePromotion),
+  updatePromotion,
+);
+
+// Delete promotion
+router.delete(
+  "/:id",
+  protect,
+  restrictTo("admin"),
+  validateObjectId(),
+  deletePromotion,
+);
 
 export default router;

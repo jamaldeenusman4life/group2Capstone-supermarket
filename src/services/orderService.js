@@ -30,7 +30,7 @@ const getOrder = async (orderId) => {
   return order;
 };
 
-const getUserOrders = async (customerId) => {
+const getMyOrders = async (customerId) => {
   const orders = await Order.find({ customer: customerId }).populate(
     "items.product",
     "name price",
@@ -70,7 +70,7 @@ export {
   createOrder,
   getAllOrders,
   getOrder,
-  getUserOrders,
+  getMyOrders,
   updateOrderStatus,
   cancelOrder,
 };
