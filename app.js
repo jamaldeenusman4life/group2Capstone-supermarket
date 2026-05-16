@@ -25,7 +25,7 @@ app.use("/api/notifications", notificationRoute);
 app.use("/api/reports", reportRoute);
 app.use("/api/orders", orderRoute);
 app.use("/api/payments", paymentRoute);
-app.use("/api/deliveries", deliveryRoute);
+app.use("/api/delivery", deliveryRoute);
 app.use("/api/suppliers", supplierRoute);
 app.use("/api/customers", customerRoute);
 app.use("/api/products", productRoutes);
@@ -33,6 +33,20 @@ app.use("/api/categories", categoryRoutes);
 
 app.get("/", (req, res) => {
   res.json({ message: "Supermarket API is running" });
+});
+
+app.use((req, res, next) => {
+  const error = new Error(`Cannot find ${req.originalUrl} on this server`);
+  error.statusCode = 404;
+  next(error);
+});
+
+app.use((err, req, res, next) => {
+  console.error(err);
+  res.status(err.statusCode || 500).json({
+    status: "error",
+    message: err.message || "Internal server error",
+  });
 });
 
 export default app;

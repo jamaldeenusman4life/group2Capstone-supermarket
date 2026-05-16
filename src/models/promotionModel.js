@@ -47,7 +47,7 @@ const promotionSchema = new mongoose.Schema(
 );
 
 // Index for efficient querying
-promotionSchema.index({ code: 1 });
+
 promotionSchema.index({ isActive: 1, expiryDate: 1 });
 
 export default mongoose.model("Promotion", promotionSchema);

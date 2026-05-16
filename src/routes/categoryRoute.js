@@ -13,18 +13,18 @@ import { protect, restrictTo } from "../middlewares/authMiddleware.js";
 const router = express.Router();
 
 // Public routes
-router.get("/category", getAllCategories);
-router.get("/category/:id", getCategory);
+router.get("/", getAllCategories);
+router.get("/:id", getCategory);
 
 // Admin only routes
 router.post(
-  "/category",
+  "/",
   protect,
   validate(validateCategory),
   restrictTo("admin"),
   createCategory,
 );
-router.put("/category/:id", protect, restrictTo("admin"), updateCategory);
-router.delete("/category/:id", protect, restrictTo("admin"), deleteCategory);
+router.put("/:id", protect, restrictTo("admin"), updateCategory);
+router.delete("/:id", protect, restrictTo("admin"), deleteCategory);
 
 export default router;

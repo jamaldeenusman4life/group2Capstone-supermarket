@@ -1,4 +1,4 @@
-import { boolean } from "joi";
+import joi from "joi";
 import mongoose from "mongoose";
 export const productSchema = new mongoose.Schema(
   {
@@ -25,7 +25,7 @@ export const productSchema = new mongoose.Schema(
     supplier: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Supplier",
-      required: [true, " A product must be assigned to supplier"],
+      default: null,
     },
     quantity: {
       type: Number,

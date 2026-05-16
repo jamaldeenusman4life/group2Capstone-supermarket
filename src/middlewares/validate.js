@@ -4,7 +4,7 @@ export const validate = (schema) => {
     if (error) {
       const errorMessages = error.details.map((detail) => detail.message);
       return res.status(400).json({
-        success: false,
+        status: "error",
         errors: errorMessages,
       });
     }

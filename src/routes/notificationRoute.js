@@ -22,7 +22,7 @@ router.get("/unread/count", getUnreadCount);
 
 // Mark as read
 router.put("/:id/read", markNotificationAsRead);
-router.put("/mark-all/read", markAllAsRead);
+router.put("/read-all", markAllAsRead);
 
 // Delete notifications
 router.delete("/:id", deleteNotification);

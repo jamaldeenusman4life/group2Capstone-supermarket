@@ -13,8 +13,8 @@ const router = express.Router();
 
 //Customer routes
 router.post("/", protect, restrictTo("customer"), createOrder);
-router.get("/user-orders", protect, restrictTo("customer"), getUserOrders);
-router.put("/:id/status", protect, restrictTo("customer"), cancelOrder);
+router.get("/my-orders", protect, restrictTo("customer"), getUserOrders);
+router.put("/:id/cancel", protect, restrictTo("customer"), cancelOrder);
 
 //Admin and cashier routes
 router.get("/", protect, restrictTo("admin", "cashier"), getAllOrders);

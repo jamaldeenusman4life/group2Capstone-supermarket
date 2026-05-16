@@ -9,7 +9,7 @@ export const validateProduct = joi
     price: joi.number().positive().required(),
     quantity: joi.number().integer().min(0).required(),
     category: joi.string().hex().length(24).required(),
-    supplier: joi.string().hex().length(24).required(),
+    supplier: joi.string().hex().length(24).optional(),
     lowStockThreshold: joi.number().integer().min(0).default(10),
     expiryDate: joi.date().greater("now").optional(),
     images: joi.array().items(joi.string().uri()).max(5),

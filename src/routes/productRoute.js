@@ -14,35 +14,35 @@ import {
   updateProductValidation,
 } from "../validations/productValidation.js";
 import { validate } from "../middlewares/validate.js";
-import { verifyEntityExists } from "../middlewares/verifyEnitity.js";
+import { verifyEntityExists } from "../middlewares/verifyEntity.js";
 import { validateObjectId } from "../middlewares/validateId.js";
 import Category from "../models/categoryModel.js";
 import Supplier from "../models/supplierModel.js";
 import { restrictTo, protect } from "../middlewares/authMiddleware.js";
 const router = express.Router();
 router.post(
-  "/product",
+  "/",
   protect,
   restrictTo("admin"),
   validate(validateProduct),
-  verifyEntityExists(Category, category),
-  verifyEntityExists(Supplier, supplier),
+  verifyEntityExists(Category, "category"),
+  verifyEntityExists(Supplier, "supplier"),
   createProduct,
 );
-router.get("/product/:id", validateObjectId, getProduct);
-router.get("/product", getAllProduct);
-router.update(
-  "/product/:id",
+router.get("/:id", validateObjectId, getProduct);
+router.get("/", getAllProduct);
+router.put(
+  "/:id",
   protect,
   restrictTo("admin"),
   validateObjectId,
   validate(updateProductValidation),
-  verifyEntityExists(Category, category),
-  verifyEntityExists(Supplier, supplier),
+  verifyEntityExists(Category, "category"),
+  verifyEntityExists(Supplier, "supplier"),
   updateProduct,
 );
 router.delete(
-  "/product/:id",
+  "/:id",
   protect,
   restrictTo("admin"),
   validateObjectId,
