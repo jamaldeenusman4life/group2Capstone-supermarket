@@ -1,10 +1,11 @@
 import Payment from "../models/paymentModel.js";
+import User from "../models/userModel.js";
 import Order from "../models/orderModel.js";
 import { calculateOrderTotal } from "../utils/calculateTotal.js";
 import axios from "axios";
 
 const initiatePayment = async (orderId, customerId, method) => {
-  const order = await Order.findById(orderId).populate("customer", "email");
+  const order = await Order.findById(orderId);
   if (!order) {
     throw new Error("Order not found");
   }
@@ -15,6 +16,11 @@ const initiatePayment = async (orderId, customerId, method) => {
 
   if (order.status !== "pending") {
     throw new Error("This order has already been paid for");
+  }
+
+  const customer = await User.findById(customerId).select("email");
+  if (!customer) {
+    throw new Error("Customer not found");
   }
 
   const payment = await Payment.create({
@@ -29,7 +35,7 @@ const initiatePayment = async (orderId, customerId, method) => {
     const response = await axios.post(
       "https://api.paystack.co/transaction/initialize",
       {
-        email: order.customer.email,
+        email: customer.email,
         amount: calculateOrderTotal(order.items) * 100,
         reference: payment._id.toString(),
       },
