@@ -13,7 +13,7 @@ export const getNotifications = async (req, res) => {
       userId,
       null,
       limit,
-      skip
+      skip,
     );
 
     res.status(200).json({
@@ -34,9 +34,8 @@ export const getNotifications = async (req, res) => {
 export const getUnreadNotifications = async (req, res) => {
   try {
     const userId = req.user.id;
-    const notifications = await notificationService.getUnreadNotifications(
-      userId
-    );
+    const notifications =
+      await notificationService.getUnreadNotifications(userId);
 
     res.status(200).json({
       status: "success",
@@ -80,7 +79,7 @@ export const markNotificationAsRead = async (req, res) => {
 
     const notification = await notificationService.markNotificationAsRead(
       notificationId,
-      userId
+      userId,
     );
 
     res.status(200).json({

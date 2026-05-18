@@ -31,8 +31,20 @@ router.post(
   verifyEntityExists(Supplier, "supplier"),
   createProduct,
 );
-router.get("/:id", validateObjectId(), getProduct);
 router.get("/", getAllProduct);
+router.get(
+  "/inventory/low-stock",
+  protect,
+  restrictTo("admin"),
+  getLowStockProducts,
+);
+router.get(
+  "/inventory/expiring",
+  protect,
+  restrictTo("admin"),
+  getExpiringProducts,
+);
+router.get("/:id", validateObjectId(), getProduct);
 router.put(
   "/:id",
   protect,
@@ -49,18 +61,6 @@ router.delete(
   restrictTo("admin"),
   validateObjectId(),
   deleteProduct,
-);
-router.get(
-  "/inventory/low-stock",
-  protect,
-  restrictTo("admin"),
-  getLowStockProducts,
-);
-router.get(
-  "/inventory/expiring",
-  protect,
-  restrictTo("admin"),
-  getExpiringProducts,
 );
 router.put("/inventory/:id/stock", protect, restrictTo("admin"), updateStock);
 export default router;

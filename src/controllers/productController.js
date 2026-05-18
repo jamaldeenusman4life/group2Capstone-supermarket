@@ -10,10 +10,10 @@ export const createProduct = async (req, res) => {
     });
     console.log({ "added product": product });
   } catch (error) {
-    console.log({ "error creating product": error.message });
+    console.error(error);
     return res.status(500).json({
       status: "error",
-      message: "Please try again later",
+      message: "error.message",
     });
   }
 };
@@ -34,10 +34,10 @@ export const getProduct = async (req, res) => {
       data: { product },
     });
   } catch (error) {
-    console.log({ "error getting a product": error.message });
+    console.error(error);
     res.status(500).json({
       status: "error",
-      message: "Please try again later",
+      message: "error.message",
     });
   }
 };
@@ -54,10 +54,10 @@ export const getAllProduct = async (req, res) => {
     });
     console.log({ status: "got all products with pagination" });
   } catch (error) {
-    console.log({ "error getting all products": error.message });
+    console.error(error);
     res.status(500).json({
       status: "error",
-      message: "Please try again later",
+      message: "error.message",
     });
   }
 };
@@ -81,10 +81,10 @@ export const updateProduct = async (req, res) => {
     });
     console.log({ "product updated successfully": product });
   } catch (error) {
-    console.log({ "error updating product": error.message });
+    console.error(error);
     res.status(500).json({
       status: "error",
-      message: "Please try again later",
+      message: "error.message",
     });
   }
 };
@@ -107,10 +107,10 @@ export const deleteProduct = async (req, res) => {
     });
     console.log("product successfully soft deleted", product);
   } catch (error) {
-    console.log("error deleting product", error.message);
+    console.error("error deleting product", error.message);
     res.status(500).json({
       status: "error",
-      message: "Please try again later",
+      message: "error.message",
     });
   }
 };
@@ -124,6 +124,7 @@ export const getLowStockProducts = async (req, res) => {
       data: { products },
     });
   } catch (error) {
+    console.error("error getting low stock products", error.message);
     res.status(500).json({
       status: "error",
       message: error.message,
@@ -142,6 +143,7 @@ export const updateStock = async (req, res) => {
       data: { product },
     });
   } catch (error) {
+    console.error("error updating product stock", error.message);
     res.status(400).json({
       status: "error",
       message: error.message,
@@ -158,6 +160,7 @@ export const getExpiringProducts = async (req, res) => {
       data: { products },
     });
   } catch (error) {
+    console.error("error getting expiring products", error.message);
     res.status(500).json({
       status: "error",
       message: error.message,

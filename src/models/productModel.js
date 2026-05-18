@@ -1,4 +1,3 @@
-import joi from "joi";
 import mongoose from "mongoose";
 export const productSchema = new mongoose.Schema(
   {
@@ -40,7 +39,7 @@ export const productSchema = new mongoose.Schema(
     },
     expiryDate: {
       type: Date,
-      Validate: {
+      validate: {
         validator: function (value) {
           if (!value) return true;
           return value > Date.now();
@@ -50,7 +49,7 @@ export const productSchema = new mongoose.Schema(
       },
     },
     images: {
-      type: ["String"],
+      type: [String],
       validate: {
         validator: function (array) {
           return array.length <= 5;
@@ -73,16 +72,6 @@ export const productSchema = new mongoose.Schema(
   },
   { timestamps: true },
 );
-productSchema.pre("save", function (next) {
-  if (this.isModified("name")) {
-    ((this.name = this.name.charAt(0).toUpperCase() + this.name), slice(1));
-  }
-  if (this.quantity === 0) {
-    this.isAvailable = false;
-  } else {
-    this.isAvailable = true;
-  }
-  next();
-});
+
 const Product = mongoose.model("Product", productSchema);
 export default Product;

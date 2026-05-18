@@ -34,33 +34,4 @@ router.get(
   generatePromotionReport,
 );
 
-// Saved reports
-router.get("/saved", protect, restrictTo("admin"), getSavedReports);
-
-router.get("/statistics", protect, restrictTo("admin"), getReportStatistics);
-
-router.get(
-  "/saved/:id",
-  protect,
-  restrictTo("admin"),
-  validateObjectId(),
-  getSavedReportById,
-);
-
-router.put(
-  "/saved/:id/archive",
-  protect,
-  restrictTo("admin"),
-  validateObjectId(),
-  archiveReport,
-);
-
-router.delete(
-  "/saved/:id",
-  protect,
-  restrictTo("admin"),
-  validateObjectId(),
-  deleteReport,
-);
-
 export default router;
