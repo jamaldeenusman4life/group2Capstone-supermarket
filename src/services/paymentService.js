@@ -1,9 +1,10 @@
 import Payment from "../models/paymentModel.js";
 import Order from "../models/orderModel.js";
-import axios from 'axios';
+import { calculateOrderTotal } from "../utils/calculateTotal.js";
+import axios from "axios";
 
 const initiatePayment = async (orderId, customerId, method) => {
-  const order = await Order.findById(orderId);
+  const order = await Order.findById(orderId).populate("customer", "email");
   if (!order) {
     throw new Error("Order not found");
   }
@@ -19,7 +20,7 @@ const initiatePayment = async (orderId, customerId, method) => {
   const payment = await Payment.create({
     order: orderId,
     customer: customerId,
-    amount: order.totalAmount,
+    amount: calculateOrderTotal(order.items) * 100,
     method,
     status: "pending",
   });
@@ -28,19 +29,19 @@ const initiatePayment = async (orderId, customerId, method) => {
     const response = await axios.post(
       "https://api.paystack.co/transaction/initialize",
       {
-        email: order.customerEmail,
-        amount: order.totalAmount * 100,
+        email: order.customer.email,
+        amount: calculateOrderTotal(order.items) * 100,
         reference: payment._id.toString(),
       },
       {
         headers: {
-          Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`
-        }
-      }
+          Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
+        },
+      },
     );
     return {
       payment,
-      paystackUrl: response.data.data.authorization_url
+      paystackUrl: response.data.data.authorization_url,
     };
   }
 
@@ -53,8 +54,8 @@ const verifyPayment = async (reference) => {
     {
       headers: {
         Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
-      }
-    }
+      },
+    },
   );
 
   const { status } = response.data.data;
