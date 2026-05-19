@@ -7,7 +7,6 @@ import {
   markNotificationAsRead,
   markAllAsRead,
   deleteNotification,
-  deleteAllNotifications,
 } from "../controllers/notificationController.js";
 import { protect } from "../middlewares/authMiddleware.js";
 import { validateBody, validateObjectId } from "../middlewares/validator.js";
@@ -32,9 +31,5 @@ router.put("/read-all", markAllAsRead);
 
 // Delete notification
 router.delete("/:id", validateObjectId(), deleteNotification);
-router.delete("/all", deleteAllNotifications);
-
-//Delete all notifications for a user
-router.delete("/user/:userId", validateObjectId(), deleteAllNotifications);
 
 export default router;
