@@ -45,26 +45,46 @@ export const validateUpdateSupplier = joi
     "object.min": "At least one field must be updated",
   });
 
-export const validateCreatePurchaseOrder = joi
-  .object({
-    supplier: joi.string().hex().length(24).required().messages({ 
+export const validateCreatePurchaseOrder = Joi.object({
+  supplier: Joi.string()
+    .pattern(/^[0-9a-fA-F]{24}$/)
+    .required()
+    .messages({
+      "string.pattern.base": "Invalid supplier ID",
       "string.empty": "Supplier ID is required",
-      "string.hex": "Supplier ID must be a valid hexadecimal string",
-      "string.length": "Supplier ID must be 24 characters long",
     }),
-    products: joi.array().items(joi.string().hex().length(24)).min(1).required().messages({
-      "array.base": "Products must be an array",
-      "array.min": "At least one product must be included",
-      "string.hex": "Each product ID must be a valid hexadecimal string",
-      "string.length": "Each product ID must be 24 characters long",
+  products: Joi.array()
+    .items(
+      Joi.object({
+        product: Joi.string()
+          .pattern(/^[0-9a-fA-F]{24}$/)
+          .required()
+          .messages({
+            "string.pattern.base": "Invalid product ID",
+            "string.empty": "Product ID is required",
+          }),
+        quantity: Joi.number().min(1).required().messages({
+          "number.min": "Quantity must be at least 1",
+          "any.required": "Quantity is required",
+        }),
+      }),
+    )
+    .min(1)
+    .required()
+    .messages({
+      "array.min": "Purchase order must have at least one product",
+      "any.required": "Products are required",
     }),
-    totalAmount: joi.number().positive().required().messages({
-      "number.base": "Total amount must be a number",
-      "number.positive": "Total amount must be a positive number",
-      "any.required": "Total amount is required",
+  totalAmount: Joi.number().min(0).optional().messages({
+    "number.min": "Total amount cannot be negative",
+  }),
+  status: Joi.string()
+    .valid("pending", "received", "cancelled")
+    .optional()
+    .messages({
+      "any.only": "Status must be one of: pending, received, cancelled",
     }),
-  })
-  .unknown(false);
+}).unknown(false);
 
 export const validateUpdatePurchaseOrderStatus = joi
   .object({
