@@ -28,11 +28,11 @@ router.get("/unread/count", getUnreadCount);
 
 // Mark as read
 router.put("/:id/read", validateObjectId(), markNotificationAsRead);
-router.put("/read-all", validateBody(), markAllAsRead);
+router.put("/read-all", markAllAsRead);
 
 // Delete notification
 router.delete("/:id", validateObjectId(), deleteNotification);
-router.delete("/", validateBody(), deleteAllNotifications);
+router.delete("/all", deleteAllNotifications);
 
 //Delete all notifications for a user
 router.delete("/user/:userId", validateObjectId(), deleteAllNotifications);
