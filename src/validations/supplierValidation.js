@@ -45,46 +45,52 @@ export const validateUpdateSupplier = joi
     "object.min": "At least one field must be updated",
   });
 
-export const validateCreatePurchaseOrder = Joi.object({
-  supplier: Joi.string()
-    .pattern(/^[0-9a-fA-F]{24}$/)
-    .required()
-    .messages({
-      "string.pattern.base": "Invalid supplier ID",
-      "string.empty": "Supplier ID is required",
-    }),
-  products: Joi.array()
-    .items(
-      Joi.object({
-        product: Joi.string()
-          .pattern(/^[0-9a-fA-F]{24}$/)
-          .required()
-          .messages({
-            "string.pattern.base": "Invalid product ID",
-            "string.empty": "Product ID is required",
-          }),
-        quantity: Joi.number().min(1).required().messages({
-          "number.min": "Quantity must be at least 1",
-          "any.required": "Quantity is required",
-        }),
+export const validateCreatePurchaseOrder = joi
+  .object({
+    supplier: joi
+      .string()
+      .pattern(/^[0-9a-fA-F]{24}$/)
+      .required()
+      .messages({
+        "string.pattern.base": "Invalid supplier ID",
+        "string.empty": "Supplier ID is required",
       }),
-    )
-    .min(1)
-    .required()
-    .messages({
-      "array.min": "Purchase order must have at least one product",
-      "any.required": "Products are required",
+    products: joi
+      .array()
+      .items(
+        joi.object({
+          product: joi
+            .string()
+            .pattern(/^[0-9a-fA-F]{24}$/)
+            .required()
+            .messages({
+              "string.pattern.base": "Invalid product ID",
+              "string.empty": "Product ID is required",
+            }),
+          quantity: joi.number().min(1).required().messages({
+            "number.min": "Quantity must be at least 1",
+            "any.required": "Quantity is required",
+          }),
+        }),
+      )
+      .min(1)
+      .required()
+      .messages({
+        "array.min": "Purchase order must have at least one product",
+        "any.required": "Products are required",
+      }),
+    totalAmount: joi.number().min(0).optional().messages({
+      "number.min": "Total amount cannot be negative",
     }),
-  totalAmount: Joi.number().min(0).optional().messages({
-    "number.min": "Total amount cannot be negative",
-  }),
-  status: Joi.string()
-    .valid("pending", "received", "cancelled")
-    .optional()
-    .messages({
-      "any.only": "Status must be one of: pending, received, cancelled",
-    }),
-}).unknown(false);
+    status: joi
+      .string()
+      .valid("pending", "received", "cancelled")
+      .optional()
+      .messages({
+        "any.only": "Status must be one of: pending, received, cancelled",
+      }),
+  })
+  .unknown(false);
 
 export const validateUpdatePurchaseOrderStatus = joi
   .object({
