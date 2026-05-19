@@ -1,5 +1,41 @@
 import notificationService from "../services/notificationService.js";
 
+export const createNotification = async (req, res) => {
+  try {
+    const { title, message, type, relatedId } = req.body;
+
+    const userId = req.user.id;
+
+    // Valid notification types
+    const validTypes = ["order", "delivery", "restock", "promotion"];
+
+    // Check notification type
+    if (!validTypes.includes(type)) {
+      return res.status(400).json({
+        status: "error",
+        message: `Invalid notification type. Must be one of: ${validTypes.join(", ")}`,
+      });
+    }
+
+    const notification = await notificationService.createNotification(
+      userId,
+      title,
+      message,
+      type,
+      relatedId,
+    );
+
+    res.status(201).json({
+      status: "success",
+      data: { notification },
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: "error",
+      message: error.message,
+    });
+  }
+};
 /**
  * Get all notifications for the authenticated user
  */
