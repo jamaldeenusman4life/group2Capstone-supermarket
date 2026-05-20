@@ -12,8 +12,6 @@ const createOrder = async (customerId, orderData) => {
     ...orderData,
   });
 
-  import sendEmail from "../utils/sendEmail.js";
-
   try {
     const customer = await User.findById(customerId).select("name email");
     await sendEmail({
