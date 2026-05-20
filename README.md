@@ -7,6 +7,7 @@ A RESTful API for a supermarket management system built with Node.js, Express, M
 ## 📌 Project Overview
 
 This repository contains the backend API for managing:
+
 - Users and authentication
 - Products and categories
 - Orders and payments
@@ -21,24 +22,18 @@ The application is structured using controllers, services, routes, models, middl
 
 ### 1 — Clone the repository
 
-```bash
 git clone https://github.com/jamaldeenusman4life/group2Capstone-supermarket.git
 cd group2Capstone-supermarket
-```
 
 ### 2 — Install dependencies
 
-```bash
 npm install
-```
 
 ### 3 — Create and configure `.env`
 
 Copy the example file and populate your configuration values:
 
-```bash
 cp .env.example .env
-```
 
 Update `.env` with your environment values, for example:
 
@@ -52,13 +47,13 @@ PAYSTACK_SECRET=your_paystack_secret
 
 ### 4 — Start the server
 
-```bash
+```
 npm run dev
 ```
 
 If the server starts successfully, you should see:
 
-```bash
+```
 MongoDB Connected
 Server running on http://localhost:5000
 ```
@@ -106,18 +101,6 @@ project-root/
 
 ---
 
-## 🔐 Environment Variables
-
-The project expects the following variables in `.env`:
-
-- `PORT` — server port (example: `5000`)
-- `MONGO_URI` — MongoDB connection string
-- `JWT_SECRET` — JWT signing secret
-- `JWT_EXPIRES_IN` — JWT expiration (example: `30d`)
-- `PAYSTACK_SECRET` — Paystack secret key for payment integration
-
----
-
 ## 🧩 API Route Groups
 
 The API includes the following route groups:
@@ -136,26 +119,181 @@ The API includes the following route groups:
 
 ---
 
-## 🔐 Example Authentication Endpoints
+---
 
-| Method | Endpoint | Description | Access |
-| ------ | -------- | ----------- | ------ |
-| POST | `/api/auth/register` | Register a new user | Public |
-| POST | `/api/auth/login` | Login and receive a token | Public |
-| GET | `/api/auth/me` | Get authenticated user profile | Private |
+## 🔐 Authentication
+
+This API uses JWT Bearer token authentication.
+
+After registering or logging in copy the token from the response and add it to your request headers: Bearer your_token_here
+
+### Roles
+
+| Role     | Permissions                                  |
+| -------- | -------------------------------------------- |
+| admin    | Full access to everything                    |
+| cashier  | View products, process and view orders       |
+| customer | Browse products, place orders, make payments |
+| rider    | View and update assigned deliveries          |
 
 ---
+
+## 📋 API Endpoints
+
+### 🔐 Auth
+
+| Method | Endpoint           | Description         | Access  |
+| ------ | ------------------ | ------------------- | ------- |
+| POST   | /api/auth/register | Register a new user | Public  |
+| POST   | /api/auth/login    | Login user          | Public  |
+| GET    | /api/auth/me       | Get logged in user  | Private |
+
+### 📂 Categories
+
+| Method | Endpoint            | Description         | Access |
+| ------ | ------------------- | ------------------- | ------ |
+| GET    | /api/categories     | Get all categories  | Public |
+| GET    | /api/categories/:id | Get single category | Public |
+| POST   | /api/categories     | Create category     | Admin  |
+| PUT    | /api/categories/:id | Update category     | Admin  |
+| DELETE | /api/categories/:id | Delete category     | Admin  |
+
+### 📦 Products
+
+| Method | Endpoint                          | Description            | Access |
+| ------ | --------------------------------- | ---------------------- | ------ |
+| GET    | /api/products                     | Get all products       | Public |
+| GET    | /api/products/:id                 | Get single product     | Public |
+| POST   | /api/products                     | Create product         | Admin  |
+| PUT    | /api/products/:id                 | Update product         | Admin  |
+| DELETE | /api/products/:id                 | Delete product         | Admin  |
+| GET    | /api/products/inventory/low-stock | Get low stock products | Admin  |
+| GET    | /api/products/inventory/expiring  | Get expiring products  | Admin  |
+| PUT    | /api/products/inventory/:id/stock | Update stock           | Admin  |
+
+### 🛒 Orders
+
+| Method | Endpoint               | Description         | Access         |
+| ------ | ---------------------- | ------------------- | -------------- |
+| POST   | /api/orders            | Create order        | Customer       |
+| GET    | /api/orders            | Get all orders      | Admin, Cashier |
+| GET    | /api/orders/my-orders  | Get my orders       | Customer       |
+| GET    | /api/orders/:id        | Get single order    | Admin, Cashier |
+| PUT    | /api/orders/:id/status | Update order status | Admin, Cashier |
+| PUT    | /api/orders/:id/cancel | Cancel order        | Customer       |
+
+### 💳 Payments
+
+| Method | Endpoint                        | Description          | Access          |
+| ------ | ------------------------------- | -------------------- | --------------- |
+| POST   | /api/payments/initiate          | Initiate payment     | Customer        |
+| GET    | /api/payments/verify/:reference | Verify payment       | Private         |
+| GET    | /api/payments/order/:orderId    | Get payment by order | Customer, Admin |
+| GET    | /api/payments                   | Get all payments     | Admin           |
+
+### 🚚 Delivery
+
+| Method | Endpoint                     | Description            | Access          |
+| ------ | ---------------------------- | ---------------------- | --------------- |
+| GET    | /api/delivery                | Get all deliveries     | Admin           |
+| POST   | /api/delivery                | Create delivery        | Admin           |
+| GET    | /api/delivery/my-deliveries  | Get rider deliveries   | Rider           |
+| GET    | /api/delivery/order/:orderId | Get delivery by order  | Customer, Admin |
+| PUT    | /api/delivery/:id/assign     | Assign rider           | Admin           |
+| PUT    | /api/delivery/:id/status     | Update delivery status | Rider, Admin    |
+
+### 👤 Customers
+
+| Method | Endpoint           | Description       | Access          |
+| ------ | ------------------ | ----------------- | --------------- |
+| GET    | /api/customers     | Get all customers | Admin           |
+| GET    | /api/customers/:id | Get customer      | Customer, Admin |
+| PUT    | /api/customers/:id | Update customer   | Customer        |
+
+### 🏭 Suppliers
+
+| Method | Endpoint                                  | Description                  | Access |
+| ------ | ----------------------------------------- | ---------------------------- | ------ |
+| GET    | /api/suppliers                            | Get all suppliers            | Admin  |
+| POST   | /api/suppliers                            | Create supplier              | Admin  |
+| GET    | /api/suppliers/:id                        | Get supplier                 | Admin  |
+| PUT    | /api/suppliers/:id                        | Update supplier              | Admin  |
+| DELETE | /api/suppliers/:id                        | Delete supplier              | Admin  |
+| GET    | /api/suppliers/purchase-orders/all        | Get all purchase orders      | Admin  |
+| POST   | /api/suppliers/purchase-orders            | Create purchase order        | Admin  |
+| PUT    | /api/suppliers/purchase-orders/:id/status | Update purchase order status | Admin  |
+
+### 🎯 Promotions
+
+| Method | Endpoint               | Description           | Access   |
+| ------ | ---------------------- | --------------------- | -------- |
+| GET    | /api/promotions        | Get all promotions    | Public   |
+| GET    | /api/promotions/active | Get active promotions | Public   |
+| POST   | /api/promotions        | Create promotion      | Admin    |
+| GET    | /api/promotions/:id    | Get promotion         | Private  |
+| PUT    | /api/promotions/:id    | Update promotion      | Admin    |
+| DELETE | /api/promotions/:id    | Delete promotion      | Admin    |
+| POST   | /api/promotions/apply  | Apply promotion       | Customer |
+
+### 🔔 Notifications
+
+| Method | Endpoint                        | Description              | Access  |
+| ------ | ------------------------------- | ------------------------ | ------- |
+| GET    | /api/notifications              | Get notifications        | Private |
+| GET    | /api/notifications/unread       | Get unread notifications | Private |
+| GET    | /api/notifications/unread/count | Get unread count         | Private |
+| PUT    | /api/notifications/read-all     | Mark all as read         | Private |
+| PUT    | /api/notifications/:id/read     | Mark as read             | Private |
+| DELETE | /api/notifications/:id          | Delete notification      | Private |
+
+### 📊 Reports
+
+| Method | Endpoint                | Description      | Access |
+| ------ | ----------------------- | ---------------- | ------ |
+| GET    | /api/reports/sales      | Sales report     | Admin  |
+| GET    | /api/reports/products   | Product report   | Admin  |
+| GET    | /api/reports/revenue    | Revenue report   | Admin  |
+| GET    | /api/reports/customers  | Customer report  | Admin  |
+| GET    | /api/reports/promotions | Promotion report | Admin  |
+
+---
+
+## 📧 Email Notifications
+
+The system automatically sends emails for the following events:
+
+| Event               | Recipient  | Description                              |
+| ------------------- | ---------- | ---------------------------------------- |
+| User Registration   | New user   | Welcome email with account details       |
+| Order Placed        | Customer   | Order confirmation with order details    |
+| Order Status Update | Customer   | Notification of status change            |
+| Low Stock Alert     | All admins | Alert when product drops below threshold |
+
+---
+
+## 🔗 API Documentation
+
+Import our Postman collection to test all endpoints:
+
+[Download Postman Collection]
+https://documenter.getpostman.com/view/52434386/2sBXwjuYHu
+
+---
+
+## 🌿 Branch Strategy
+
+```
+main ← final submission
+└── dev ← everyone merges here
+├── feature/auth
+├── feature/products-inventory
+├── feature/orders-payments
+├── feature/delivery-customers-suppliers
+└── feature/promotions-notifications-reports
+```
 
 ## 📌 Notes
 
 - This README describes the backend API only.
 - The current project uses Express 5 and Mongoose.
 - Keep this document updated as new endpoints are added.
-
----
-
-## 📚 Future Improvements
-
-- Add a Postman collection or OpenAPI documentation
-- Add automated tests for controllers and services
-- Document role-based access controls and permissions
